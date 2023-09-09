@@ -4,6 +4,7 @@ import pyautogui
 fistCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'fist.xml')
 leftHandCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'lpalm.xml')
 rightHandCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'rpalm.xml')
+pointDownCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'pointDown.xml')
 
 #Create VideoCapture Object with default webcam
 def detectHands():
@@ -13,19 +14,22 @@ def detectHands():
         #Convert to grayscale for simpler processing
         greyFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         #MultiScale to detect objects of different size 
-        fist = fistCascade.detectMultiScale(greyFrame, scaleFactor=1.3, minNeighbors=2, minSize=(100,100))
-        leftHand = leftHandCascade.detectMultiScale(greyFrame, scaleFactor = 1.3, minNeighbors=1, minSize=(30,30))
-        rightHand = rightHandCascade.detectMultiScale(greyFrame, scaleFactor = 1.3, minNeighbors=1, minSize=(30,30))
+        fist = fistCascade.detectMultiScale(greyFrame, scaleFactor=1.4, minNeighbors=2, minSize=(100,100))
+        leftHand = leftHandCascade.detectMultiScale(greyFrame, scaleFactor = 1.4, minNeighbors=1, minSize=(30,30))
+        rightHand = rightHandCascade.detectMultiScale(greyFrame, scaleFactor = 1.4, minNeighbors=1, minSize=(30,30))
+        pointDown = pointDownCascade.detectMultiScale(greyFrame, scaleFactor = 1.5, minNeighbors=5, minSize=(100,100))
         #Returns rectangle with x,y coordinate, width, height
         for (x,y,w,h) in fist:
-            cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 1)
+            cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 255, 0), 2)
             pyautogui.click(clicks=2, interval=1)
         for (x,y,w,h) in leftHand: 
-            cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 0, 255), 1)
+            cv2.rectangle(frame, (x,y), (x+w, y+h), (0, 0, 255), 2)
             moveMouse(x,y,w,h,frame)
         for (x,y,w,h) in rightHand: 
-            cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 0), 1) 
+            cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 0), 2) 
             moveMouse(x,y,w,h,frame)
+        for (x,y,w,h) in pointDown:
+            cv2.rectangle(frame, (x,y), (x+w, y+h), (255, 0, 255), 2)
         #frame = cv2.resize(frame, (200, 100))
         cv2.imshow("Hand Frame", frame)
         cv2.putText(frame, "Press 'q' to quit", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 10, (0, 0, 255), 2, cv2.LINE_AA)
